@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Выбор мест для прогулки{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Выберите места для вашей прогулки</h1>
+
+<details class="category-card" style="margin-bottom: 1rem;">
+    <summary class="navigation-title">Навигация по странице</summary>
+    <ul class="fade-in-list" style="margin-top: 1rem;">
+        <li><a class="category-title" href="#eat">Поесть или попить</a></li>
+        <li><a class="category-title" href="#walk">Погулять на свежем воздухе</a></li>
+        <li><a class="category-title" href="#indoor">Отдохнуть в помещении</a></li>
+        <li><a class="category-title" href="#culture">Культурно просветиться</a></li>
+    </ul>
+</details>
+
+<div class="categories-grid">
+    <!-- Категория: Поесть или попить -->
+    <div class="category-card" id="eat">
+        <div class="category-header">
+            <span class="category-icon">🍽️</span>
+            <h2 class="category-title">Поесть или попить</h2>
+        </div>
+
+        <div class="places-list">
+            <div class="place-item">
+                <div class="place-info">
+                    <strong>Уютное кафе «Латте»</strong>
+                    <p class="place-description">Небольшое кафе с панорамными окнами и вкусным кофе.</p>
+                    <p class="place-address">📍 Ул. Центральная, 12</p>
+                </div>
+                <button class="toggle-btn" type="button">Добавить в маршрут</button>
+            </div>
+
+            <div class="place-item">
+                <div class="place-info">
+                    <strong>Стрит‑фуд с выпечкой</strong>
+                    <p class="place-description">Фудтрак с горячией выпечкой.</p>
+                    <p class="place-address">📍 Парк Города, главная аллея</p>
+                </div>
+                <button class="toggle-btn" type="button">Добавить в маршрут</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Категория: Погулять на свежем воздухе -->
+    <div class="category-card" id="walk">
+        <div class="category-header">
+            <span class="category-icon">🌳</span>
+            <h2 class="category-title">Погулять на свежем воздухе</h2>
+        </div>
+
+        <div class="places-list">
+            <div class="place-item">
+                <div class="place-info">
+                    <strong>Городской парк</strong>
+                    <p class="place-description">Зелёные аллеи, пруд с утками и прокат велосипедов.</p>
+                    <p class="place-address">📍 Парк Победы</p>
+                </div>
+                <button class="toggle-btn" type="button">Добавить в маршрут</button>
+            </div>
+
+            <div class="place-item">
+                <div class="place-info">
+                    <strong>Набережная реки</strong>
+                    <p class="place-description">Длинная прогулочная зона вдоль воды с лавочками и фонарями.</p>
+                    <p class="place-address">📍 Набережная, 3</p>
+                </div>
+                <button class="toggle-btn" type="button">Добавить в маршрут</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Категория: Отдохнуть в помещении -->
+    <div class="category-card" id="indoor">
+        <div class="category-header">
+            <span class="category-icon">🛋️</span>
+            <h2 class="category-title">Отдохнуть в помещении</h2>
+        </div>
+
+        <div class="places-list">
+            <div class="place-item">
+                <div class="place-info">
+                    <strong>Лаунж‑пространство</strong>
+                    <p class="place-description">Уютные кресла, настольные игры и мягкий свет.</p>
+                    <p class="place-address">📍 Ул. Тихая, 7</p>
+                </div>
+                <button class="toggle-btn" type="button">Добавить в маршрут</button>
+            </div>
+
+            <div class="place-item">
+                <div class="place-info">
+                    <strong>Коворкинг «Фокус»</strong>
+                    <p class="place-description">Тихое место, где можно отдохнуть, почитать или поработать.</p>
+                    <p class="place-address">📍 Бизнес‑центр «Сити», 3 этаж</p>
+                </div>
+                <button class="toggle-btn" type="button">Добавить в маршрут</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Категория: Культурно просветиться -->
+    <div class="category-card" id="culture">
+        <div class="category-header">
+            <span class="category-icon">🏛️</span>
+            <h2 class="category-title">Культурно просветиться</h2>
+        </div>
+
+        <div class="places-list">
+            <div class="place-item">
+                <div class="place-info">
+                    <strong>Городской музей</strong>
+                    <p class="place-description">Постоянная экспозиция об истории города и временные выставки.</p>
+                    <p class="place-address">📍 Площадь Мира, 1</p>
+                </div>
+                <button class="toggle-btn" type="button">Добавить в маршрут</button>
+            </div>
+
+            <div class="place-item">
+                <div class="place-info">
+                    <strong>Арт‑галерея «Солнце»</strong>
+                    <p class="place-description">Современное искусство местных художников и фотозоны.</p>
+                    <p class="place-address">📍 Ул. Художественная, 5</p>
+                </div>
+                <button class="toggle-btn" type="button">Добавить в маршрут</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mx-auto flex max-w-sm items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/5 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+  <img class="size-12 shrink-0" src="/img/logo.svg" alt="ChitChat Logo" />
+  <div>
+    <div class="text-xl font-medium text-black dark:text-white">ChitChat</div>
+    <p class="text-gray-500 dark:text-gray-400">You have a new message!</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}{% endblock %}
