@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Выбор мест для прогулки{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <h1 class="text-3xl font-bold text-[oklch(42.1%_0.095_57.708)] mb-6">Выберите места для вашей прогулки</h1>
+
+    <details class="bg-amber-100 border border-amber-200 rounded-xl mb-8 overflow-hidden">
+        <summary class="px-5 py-4 font-semibold text-[oklch(42.1%_0.095_57.708)] cursor-pointer hover:bg-amber-200 transition-colors select-none">
+            📋 Навигация по странице
+        </summary>
+        <ul class="px-5 py-4 flex flex-col gap-2 border-t border-amber-200">
+            <li><a href="#eat" class="text-[oklch(42.1%_0.095_57.708)] hover:underline">🍽️ Поесть или попить</a></li>
+            <li><a href="#walk" class="text-[oklch(42.1%_0.095_57.708)] hover:underline">🌳 Погулять на свежем воздухе</a></li>
+            <li><a href="#indoor" class="text-[oklch(42.1%_0.095_57.708)] hover:underline">🛋️ Отдохнуть в помещении</a></li>
+            <li><a href="#culture" class="text-[oklch(42.1%_0.095_57.708)] hover:underline">🏛️ Культурно просветиться</a></li>
+        </ul>
+    </details>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div id="eat" class="bg-white border border-amber-200 rounded-2xl shadow-sm overflow-hidden">
+            <div class="bg-amber-100 px-5 py-4 flex items-center gap-3 border-b border-amber-200">
+                <span class="text-2xl">🍽️</span>
+                <h2 class="text-lg font-bold text-[oklch(42.1%_0.095_57.708)]">Поесть или попить</h2>
+            </div>
+            <div class="divide-y divide-amber-100">
+
+                <div class="flex items-start justify-between gap-4 px-5 py-4">
+                    <div>
+                        <p class="font-semibold text-gray-800">Уютное кафе «Латте»</p>
+                        <p class="text-sm text-gray-500 mt-1">Небольшое кафе с панорамными окнами и вкусным кофе.</p>
+                        <p class="text-sm text-amber-700 mt-1">📍 Ул. Центральная, 12</p>
+                    </div>
+                    <button class="toggle-btn shrink-0 bg-amber-100 hover:bg-amber-200 text-[oklch(42.1%_0.095_57.708)] text-sm font-semibold px-4 py-2 rounded-lg transition-colors border border-amber-200">
+                        Добавить
+                    </button>
+                </div>
+
+                <div class="flex items-start justify-between gap-4 px-5 py-4">
+                    <div>
+                        <p class="font-semibold text-gray-800">Стрит‑фуд с выпечкой</p>
+                        <p class="text-sm text-gray-500 mt-1">Фудтрак с горячей выпечкой.</p>
+                        <p class="text-sm text-amber-700 mt-1">📍 Парк Города, главная аллея</p>
+                    </div>
+                    <button class="toggle-btn shrink-0 bg-amber-100 hover:bg-amber-200 text-[oklch(42.1%_0.095_57.708)] text-sm font-semibold px-4 py-2 rounded-lg transition-colors border border-amber-200">
+                        Добавить
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="walk" class="bg-white border border-amber-200 rounded-2xl shadow-sm overflow-hidden">
+            <div class="bg-amber-100 px-5 py-4 flex items-center gap-3 border-b border-amber-200">
+                <span class="text-2xl">🌳</span>
+                <h2 class="text-lg font-bold text-[oklch(42.1%_0.095_57.708)]">Погулять на свежем воздухе</h2>
+            </div>
+            <div class="divide-y divide-amber-100">
+
+                <div class="flex items-start justify-between gap-4 px-5 py-4">
+                    <div>
+                        <p class="font-semibold text-gray-800">Городской парк</p>
+                        <p class="text-sm text-gray-500 mt-1">Зелёные аллеи, пруд с утками и прокат велосипедов.</p>
+                        <p class="text-sm text-amber-700 mt-1">📍 Парк Победы</p>
+                    </div>
+                    <button class="toggle-btn shrink-0 bg-amber-100 hover:bg-amber-200 text-[oklch(42.1%_0.095_57.708)] text-sm font-semibold px-4 py-2 rounded-lg transition-colors border border-amber-200">
+                        Добавить
+                    </button>
+                </div>
+
+                <div class="flex items-start justify-between gap-4 px-5 py-4">
+                    <div>
+                        <p class="font-semibold text-gray-800">Набережная реки</p>
+                        <p class="text-sm text-gray-500 mt-1">Длинная прогулочная зона вдоль воды с лавочками и фонарями.</p>
+                        <p class="text-sm text-amber-700 mt-1">📍 Набережная, 3</p>
+                    </div>
+                    <button class="toggle-btn shrink-0 bg-amber-100 hover:bg-amber-200 text-[oklch(42.1%_0.095_57.708)] text-sm font-semibold px-4 py-2 rounded-lg transition-colors border border-amber-200">
+                        Добавить
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="indoor" class="bg-white border border-amber-200 rounded-2xl shadow-sm overflow-hidden">
+            <div class="bg-amber-100 px-5 py-4 flex items-center gap-3 border-b border-amber-200">
+                <span class="text-2xl">🛋️</span>
+                <h2 class="text-lg font-bold text-[oklch(42.1%_0.095_57.708)]">Отдохнуть в помещении</h2>
+            </div>
+            <div class="divide-y divide-amber-100">
+
+                <div class="flex items-start justify-between gap-4 px-5 py-4">
+                    <div>
+                        <p class="font-semibold text-gray-800">Лаунж‑пространство</p>
+                        <p class="text-sm text-gray-500 mt-1">Уютные кресла, настольные игры и мягкий свет.</p>
+                        <p class="text-sm text-amber-700 mt-1">📍 Ул. Тихая, 7</p>
+                    </div>
+                    <button class="toggle-btn shrink-0 bg-amber-100 hover:bg-amber-200 text-[oklch(42.1%_0.095_57.708)] text-sm font-semibold px-4 py-2 rounded-lg transition-colors border border-amber-200">
+                        Добавить
+                    </button>
+                </div>
+
+                <div class="flex items-start justify-between gap-4 px-5 py-4">
+                    <div>
+                        <p class="font-semibold text-gray-800">Коворкинг «Фокус»</p>
+                        <p class="text-sm text-gray-500 mt-1">Тихое место, где можно отдохнуть, почитать или поработать.</p>
+                        <p class="text-sm text-amber-700 mt-1">📍 Бизнес‑центр «Сити», 3 этаж</p>
+                    </div>
+                    <button class="toggle-btn shrink-0 bg-amber-100 hover:bg-amber-200 text-[oklch(42.1%_0.095_57.708)] text-sm font-semibold px-4 py-2 rounded-lg transition-colors border border-amber-200">
+                        Добавить
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="culture" class="bg-white border border-amber-200 rounded-2xl shadow-sm overflow-hidden">
+            <div class="bg-amber-100 px-5 py-4 flex items-center gap-3 border-b border-amber-200">
+                <span class="text-2xl">🏛️</span>
+                <h2 class="text-lg font-bold text-[oklch(42.1%_0.095_57.708)]">Культурно просветиться</h2>
+            </div>
+            <div class="divide-y divide-amber-100">
+
+                <div class="flex items-start justify-between gap-4 px-5 py-4">
+                    <div>
+                        <p class="font-semibold text-gray-800">Городской музей</p>
+                        <p class="text-sm text-gray-500 mt-1">Постоянная экспозиция об истории города и временные выставки.</p>
+                        <p class="text-sm text-amber-700 mt-1">📍 Площадь Мира, 1</p>
+                    </div>
+                    <button class="toggle-btn shrink-0 bg-amber-100 hover:bg-amber-200 text-[oklch(42.1%_0.095_57.708)] text-sm font-semibold px-4 py-2 rounded-lg transition-colors border border-amber-200">
+                        Добавить
+                    </button>
+                </div>
+
+                <div class="flex items-start justify-between gap-4 px-5 py-4">
+                    <div>
+                        <p class="font-semibold text-gray-800">Арт‑галерея «Солнце»</p>
+                        <p class="text-sm text-gray-500 mt-1">Современное искусство местных художников и фотозоны.</p>
+                        <p class="text-sm text-amber-700 mt-1">📍 Ул. Художественная, 5</p>
+                    </div>
+                    <button class="toggle-btn shrink-0 bg-amber-100 hover:bg-amber-200 text-[oklch(42.1%_0.095_57.708)] text-sm font-semibold px-4 py-2 rounded-lg transition-colors border border-amber-200">
+                        Добавить
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}{% endblock %}

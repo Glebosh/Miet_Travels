@@ -1,0 +1,15 @@
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path("", views.index, name="index"),
+    path("selected/", views.selected_places, name="selected_places"),
+    path("feedback/", views.feedback, name="feedback"),
+    path("register/", views.register, name="register"),
+    path("login/", views.login_view, name="login"),
+    path("send-feedback/", views.send_feedback_message, name="send-feedback"),
+    path('reg-process', views.reg_process, name="reg-process"),
+    path('log-process', views.log_process, name="log-process"),
+    path('logout-process', views.logout_process, name="logout-process")
+]
