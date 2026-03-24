@@ -9,7 +9,7 @@ from aiogram.client.session.aiohttp import AiohttpSession
 from travels.models import User, Places
 
 from loguru import logger
-import aiohttp
+import requests
 
 
 BOT = Bot('5973563978:AAF4bQPXCcfLOg3-vhSD8XZ8-dTk7CFZW9o', session=AiohttpSession())
@@ -24,11 +24,40 @@ def index(request):
             categories[place.category] = []
         categories[place.category].append(place)
 
-    return render(request, "travels/index.html", {'categories': categories})
+    try:
+        return render(request, "travels/index.html", {
+            'categories': categories,
+            'travel_points_ids': request.session['travel_points']
+        })
+    except KeyError:
+        return render(request, "travels/index.html", {
+            'categories': categories,
+            'travel_points_ids': []
+        })
 
 
 def selected_places(request):
-    return render(request, "travels/selected_places.html")
+    try:
+        places = Places.objects.all().order_by('id')
+
+        places_to_visit = []
+        count = 0
+        logger.info(places)
+
+        for place_id in request.session['travel_points']:
+            count += 1
+            places_to_visit.append(places[int(place_id) - 1])
+
+        return render(request, "travels/selected_places.html", {
+            'places_to_visit': places_to_visit,
+            'places_number': count
+        })
+    
+    except KeyError:
+        return render(request, "travels/selected_places.html", {
+            'places_to_visit': [],
+            'places_number': 0
+        })
 
 
 def feedback(request):
@@ -44,7 +73,7 @@ def login_view(request):
 
 
 @csrf_exempt
-async def send_feedback_message(request):
+def send_feedback_message(request):
     if request.method == 'POST':
         try:
             name = request.POST.get('name')
@@ -57,17 +86,15 @@ async def send_feedback_message(request):
                 'text': full_message,
             }
 
-            async with aiohttp.ClientSession() as session:
-                async with session.post(f"https://api.telegram.org/bot{BOT.token}/sendMessage", json=payload) as response:
-                    response.raise_for_status()
-                    logger.info(await response.json())
+            response = requests.post(
+                f"https://api.telegram.org/bot{BOT.token}/sendMessage",
+                json=payload
+            )
 
-                    if response.status == 200 or response.status == 201:
-                        return render(request, 'travels/feedback_success.html')
-                    
-        except aiohttp.ClientResponseError as e:
-            print(f"HTTP error: {e.status}")
-        except aiohttp.ClientConnectionError:
+            if response.status_code in (200, 201):
+                return render(request, 'travels/feedback_success.html')
+
+        except requests.ConnectionError:
             print("No connection")
         except Exception as e:
             logger.error(f"Error: {e}")
@@ -111,6 +138,7 @@ def log_process(request):
             if check_password(password, user.password):
                 request.session['user_id'] = user.id
                 request.session['user_name'] = user.first_name
+                request.session['travel_points'] = []
                 logger.info("Successful log proccess")
                 return redirect('index')
             else:
@@ -126,6 +154,34 @@ def log_process(request):
             logger.info(f"Error: {e}")
     
     return render(request, 'travels/index.html')
+
+
+@csrf_exempt
+def add_travel_point(request):
+    id_el = request.GET.get('data_key', None)
+    if id_el:
+        try:
+            request.session['travel_points'].append(int(id_el))
+            request.session.modified = True
+            logger.info(f"Session: {request.session['travel_points']}")
+            return redirect(f'/travels/#place-{id_el}')
+        except Exception as e:
+            logger.error(f"Error: {e}")
+    return redirect('index')
+
+
+@csrf_exempt
+def remove_travel_point(request):
+    id_el = request.GET.get('data_key', None)
+    if id_el:
+        try:
+            request.session['travel_points'].remove(int(id_el))
+            request.session.modified = True
+            return redirect(f'/travels/#place-{id_el}')
+            # logger.info(f"Session: {request.session['travel_points']}")
+        except Exception as e:
+            logger.error(f"Error: {e}")
+    return redirect('index')
 
 
 def logout_process(request):

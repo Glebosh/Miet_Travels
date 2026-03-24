@@ -11,5 +11,7 @@ urlpatterns = [
     path("send-feedback/", views.send_feedback_message, name="send-feedback"),
     path('reg-process', views.reg_process, name="reg-process"),
     path('log-process', views.log_process, name="log-process"),
-    path('logout-process', views.logout_process, name="logout-process")
+    path('logout-process', views.logout_process, name="logout-process"),
+    path('add-travel-point', views.add_travel_point, name="add-travel-point"),
+    path('remove-travel-point', views.remove_travel_point, name="remove-travel-point")
 ]

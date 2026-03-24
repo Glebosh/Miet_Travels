@@ -14,6 +14,7 @@ class User(models.Model):
 
 
 class Places(models.Model):
+    id_name = models.CharField(verbose_name="ID", max_length=16, default="")
     category = models.CharField(verbose_name="Категория", max_length=64, default="")
     name = models.CharField(verbose_name="Название", max_length=64, default="")
     description = models.CharField(verbose_name="Описание", max_length=256, default="")
