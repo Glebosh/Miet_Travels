@@ -130,4 +130,5 @@ STATICFILES_DIRS = [
 ]
 
 
-os.environ.get('YANDEX_MAP_API', '')
+# Yandex Map API key
+YANDEX_MAPS_API_KEY = os.environ.get('YANDEX_MAP_API', '')
