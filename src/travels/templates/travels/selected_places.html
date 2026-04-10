@@ -42,8 +42,15 @@
                     </div>
                 </div>
             {% endfor %}
-
         </div>
+
+        <div class="mt-8 px-8 pb-8 flex justify-center">
+            <a href="{% url 'travel-map' %}"
+            class="block bg-amber-400 hover:bg-amber-500 text-white font-bold py-3 px-8 rounded-lg transition-colors text-center">
+                Маршрут
+            </a>
+        </div>
+        
     {% else %}
         <div class="bg-amber-100 px-5 py-4 flex items-center gap-3 border-b border-amber-200 rounded-2xl">
             <div class="text-center w-full">

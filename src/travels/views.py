@@ -7,9 +7,12 @@ from aiogram import Bot
 from aiogram.client.session.aiohttp import AiohttpSession
 
 from travels.models import User, Places
+from mysite import settings
 
 from loguru import logger
+
 import requests
+import json
 
 
 BOT = Bot('5973563978:AAF4bQPXCcfLOg3-vhSD8XZ8-dTk7CFZW9o', session=AiohttpSession())
@@ -115,7 +118,7 @@ def reg_process(request):
                     password=make_password(request.POST.get('password')),
                 )
                 logger.info(f"Has been created User: {user}")
-                return redirect('registration')
+                return redirect('login')
             else:
                 logger.error("User with same email exists")
                 messages.error(request, "Пользователь с данной почтой уже существует!")
@@ -156,6 +159,11 @@ def log_process(request):
     return render(request, 'travels/index.html')
 
 
+def logout_process(request):
+    request.session.flush()
+    return redirect('index')
+
+
 @csrf_exempt
 def add_travel_point(request):
     id_el = request.GET.get('data_key', None)
@@ -163,7 +171,7 @@ def add_travel_point(request):
         try:
             request.session['travel_points'].append(int(id_el))
             request.session.modified = True
-            logger.info(f"Session: {request.session['travel_points']}")
+            # logger.info(f"Session: {request.session['travel_points']}")
             return redirect(f'/travels/#place-{id_el}')
         except Exception as e:
             logger.error(f"Error: {e}")
@@ -184,6 +192,14 @@ def remove_travel_point(request):
     return redirect('index')
 
 
-def logout_process(request):
-    request.session.flush()
-    return redirect('index')
+@csrf_exempt
+def travel_map(request):
+    selected_ids = request.session.get('travel_points', [])
+    places = Places.objects.filter(id__in=selected_ids)
+    addresses = [{'name': p.name, 'address': p.address} for p in places]
+    logger.info(f"Адреса: {addresses}")
+
+    return render(request, 'travels/map.html', {
+        'addresses_json': json.dumps(addresses, ensure_ascii=False),
+        'api_key': settings.YANDEX_MAPS_API_KEY
+    })

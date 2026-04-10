@@ -128,3 +128,6 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+
+os.environ.get('YANDEX_MAP_API', '')
