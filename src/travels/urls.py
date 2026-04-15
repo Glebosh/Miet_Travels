@@ -14,5 +14,8 @@ urlpatterns = [
     path('logout-process', views.logout_process, name="logout-process"),
     path('add-travel-point', views.add_travel_point, name="add-travel-point"),
     path('remove-travel-point', views.remove_travel_point, name="remove-travel-point"),
-    path('travel-map', views.travel_map, name="travel-map")
+    path('travel-map', views.travel_map, name="travel-map"),
+    path("places/events/", views.place_events, name="place-events"),
+    path("add-like/", views.add_like, name="add-like"),
+    path("add-dislike/", views.add_dislike, name="add-dislike"),
 ]

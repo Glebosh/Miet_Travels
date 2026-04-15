@@ -4,7 +4,7 @@
 {% block title %}Выбор мест для прогулки{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="max-w-5xl mx-auto px-8 py-8">
 
     {% if request.session.user_id %}
         <h1 class="text-3xl font-bold text-[oklch(42.1%_0.095_57.708)] mb-6">Выберите места для вашей прогулки</h1>
@@ -21,42 +21,66 @@
             </ul>
         </details>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {% for category_name, places in categories.items %}
+            <div id="{{ places.0.id_name }}" class="mb-4 mt-8">
+                <h2 class="text-2xl font-bold text-[oklch(42.1%_0.095_57.708)] px-2">
+                    {{ category_name }}
+                </h2>
+            </div>
 
-            {% for category_name, places in categories.items %}
-                <div id="{{ places.0.id_name }}" class="bg-white border border-amber-200 rounded-2xl shadow-sm overflow-hidden">
-                    <div class="bg-amber-100 px-5 py-4 flex items-center gap-3 border-b border-amber-200">
-                        <!-- <span class="text-2xl">🍽️</span> -->
-                        <h2 class="text-lg font-bold text-[oklch(42.1%_0.095_57.708)]">{{ category_name }}</h2>
-                    </div>
-                    <div class="divide-y divide-amber-100">
-
-                        {% for place in places %}
-                            <div id="place-{{ place.id }}" class="flex items-start justify-between gap-4 px-5 py-4">
-                                <div>
-                                    <p class="font-semibold text-gray-800">{{ place.name }}</p>
-                                    <p class="text-sm text-gray-500 mt-1">{{ place.description }}</p>
-                                    <p class="text-sm text-amber-700 mt-1">📍 {{ place.address }}</p>
-                                </div>
-                                {% if place.id in travel_points_ids %}
-                                    <a href="{% url 'remove-travel-point' %}?data_key={{ place.id }}" 
-                                    class="shrink-0 bg-red-100 hover:bg-red-200 text-red-600 text-sm font-semibold px-4 py-2 rounded-lg transition-colors border border-red-200">
-                                        Убрать
-                                    </a>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> 
+                {% for place in places %}
+                    <div id="place-{{ place.id }}" 
+                         class="bg-white border-4 border-amber-200 rounded-2xl shadow-sm overflow-hidden flex flex-col h-full">
+                        
+                        <div class="p-6 flex flex-col items-center text-center flex-grow"> 
+                            <p class="mt-2 mb-1 font-bold text-xl text-gray-800 leading-tight">{{ place.name }}</p>
+                            
+                            <div class="flex justify-center py-4">
+                                {% if place.image_name %}
+                                    <img src="{% static 'travels/places/' %}{{ place.image_name }}"
+                                        class="w-full md:w-1/2 lg:w-1/3 h-auto flex-shrink-0 object-cover rounded-lg border border-amber-200 shadow-sm">
                                 {% else %}
-                                    <a href="{% url 'add-travel-point' %}?data_key={{ place.id }}" 
-                                    class="shrink-0 bg-amber-100 hover:bg-amber-200 text-[oklch(42.1%_0.095_57.708)] text-sm font-semibold px-4 py-2 rounded-lg transition-colors border border-amber-200">
-                                        Добавить
-                                    </a>
+                                    <img src="{% static 'travels/img.jpg' %}"
+                                        class="w-48 h-48 sm:w-64 sm:h-64 flex-shrink-0 rounded-full object-cover border border-amber-200 shadow-sm">
                                 {% endif %}
                             </div>
-                        {% endfor %}
 
+                            <p class="text-base text-gray-600 mt-2 flex-grow">{{ place.description }}</p>
+                            <p class="text-sm text-amber-700 font-medium mt-4">📍 {{ place.address }}</p>
+                        </div>
+
+                        <div class="flex justify-center gap-12 py-2">
+                            <button
+                                onclick="vote({{ place.id }}, 'like')"
+                                class="text-lg hover:scale-110 transition-transform">
+                                👍 <span id="likes-{{ place.id }}">{{ place.likes }}</span>
+                            </button>
+                            <button
+                                onclick="vote({{ place.id }}, 'dislike')"
+                                class="text-lg hover:scale-110 transition-transform">
+                                👎 <span id="dislikes-{{ place.id }}">{{ place.dislikes }}</span>
+                            </button>
+                        </div>
+
+                        <div class="px-6 pb-6">
+                            {% if place.id in travel_points_ids %}
+                                <a href="{% url 'remove-travel-point' %}?data_key={{ place.id }}" 
+                                class="mt-2 mb-2 w-full bg-red-50 hover:bg-red-100 text-red-600 text-sm font-semibold py-3 rounded-xl transition-colors border border-red-100 block text-center">
+                                    Убрать
+                                </a>
+                            {% else %}
+                                <a href="{% url 'add-travel-point' %}?data_key={{ place.id }}" 
+                                class="mt-2 mb-2 w-full bg-amber-100 hover:bg-amber-200 text-[oklch(42.1%_0.095_57.708)] text-sm font-semibold py-3 rounded-xl transition-colors border border-amber-200 block text-center">
+                                    Добавить
+                                </a>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
+        {% endfor %}
 
-        </div>
     {% else %}
         <div class="bg-amber-100 px-5 py-4 flex items-center gap-3 border-b border-amber-200 rounded-2xl">
             <div class="text-center w-full">
@@ -74,9 +98,43 @@
     .category-block {
         scroll-margin-top: 100px !important;
     }
-    
+
     [id^="place-"] {
-        scroll-margin-top: 200px !important;
+        scroll-margin-top: 10px !important;
     }
 </style>
+
+<script>
+    function getCookie(name) {
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? match[2] : null;
+    }
+
+    function vote(placeId, action) {
+        const url = action === 'like'
+            ? `/travels/add-like/?data_key=${placeId}`
+            : `/travels/add-dislike/?data_key=${placeId}`;
+
+        fetch(url, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCookie('csrftoken') },
+        });
+    }
+
+    const source = new EventSource('/travels/places/events/');
+
+    source.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+
+        const likes = document.getElementById('likes-' + data.place_id);
+        const dislikes = document.getElementById('dislikes-' + data.place_id);
+
+        if (likes) likes.textContent = data.likes;
+        if (dislikes) dislikes.textContent = data.dislikes;
+    };
+
+    source.onerror = function() {
+        console.warn('SSE reconnecting...');
+    };
+</script>
 {% endblock %}

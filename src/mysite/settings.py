@@ -74,6 +74,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
+# settings.py — switch to ASGI
+ASGI_APPLICATION = "myproject.asgi.application"
+
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases

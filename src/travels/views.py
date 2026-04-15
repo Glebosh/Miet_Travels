@@ -1,5 +1,7 @@
+from django.http import JsonResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST, require_GET
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib import messages
 
@@ -12,7 +14,7 @@ from mysite import settings
 from loguru import logger
 
 import requests
-import json
+import json, time
 
 
 BOT = Bot('5973563978:AAF4bQPXCcfLOg3-vhSD8XZ8-dTk7CFZW9o', session=AiohttpSession())
@@ -37,6 +39,61 @@ def index(request):
             'categories': categories,
             'travel_points_ids': []
         })
+
+
+@require_GET
+def place_events(request):
+    def event_stream():
+        last_snapshot = {}
+        while True:
+            current_snapshot = {
+                place.id: (place.likes, place.dislikes)
+                for place in Places.objects.all().only("id", "likes", "dislikes")
+            }
+            for place_id, (likes, dislikes) in current_snapshot.items():
+                previous = last_snapshot.get(place_id)
+                if previous != (likes, dislikes):
+                    payload = json.dumps({
+                        "place_id": place_id,
+                        "likes": likes,
+                        "dislikes": dislikes,
+                    })
+                    yield f"data: {payload}\n\n"
+
+            last_snapshot = current_snapshot
+
+            time.sleep(1)
+
+    response = StreamingHttpResponse(event_stream(), content_type="text/event-stream")
+    response["Cache-Control"] = "no-cache"
+    response["X-Accel-Buffering"] = "no"
+    return response
+
+
+@require_POST
+def add_like(request):
+    place_id = request.GET.get("data_key") or request.POST.get("data_key")
+    if not place_id:
+        return JsonResponse({"ok": False, "error": "place id is required"}, status=400)
+
+    place = Places.objects.get(id=place_id)
+    place.likes += 1
+    place.save()
+
+    return JsonResponse({"ok": True})
+
+
+@require_POST
+def add_dislike(request):
+    place_id = request.GET.get("data_key") or request.POST.get("data_key")
+    if not place_id:
+        return JsonResponse({"ok": False, "error": "place id is required"}, status=400)
+
+    place = Places.objects.get(id=place_id)
+    place.dislikes += 1
+    place.save()
+
+    return JsonResponse({"ok": True})
 
 
 def selected_places(request):

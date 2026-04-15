@@ -19,6 +19,9 @@ class Places(models.Model):
     name = models.CharField(verbose_name="Название", max_length=64, default="")
     description = models.CharField(verbose_name="Описание", max_length=256, default="")
     address = models.CharField(verbose_name="Адрес", max_length=128, default="")
+    image_name = models.CharField(verbose_name="Название изображения", max_length=128, default="")
+    likes = models.PositiveIntegerField(default=0)
+    dislikes = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.category}: {self.name}"
