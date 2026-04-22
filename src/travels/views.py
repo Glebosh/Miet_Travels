@@ -1,12 +1,8 @@
 from django.http import JsonResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST, require_GET
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib import messages
-
-from aiogram import Bot
-from aiogram.client.session.aiohttp import AiohttpSession
 
 from travels.models import User, Places
 from mysite import settings
@@ -15,10 +11,6 @@ from loguru import logger
 
 import requests
 import json, time
-
-
-BOT = Bot('5973563978:AAF4bQPXCcfLOg3-vhSD8XZ8-dTk7CFZW9o', session=AiohttpSession())
-
 
 def index(request):
     places = Places.objects.all()
@@ -41,59 +33,59 @@ def index(request):
         })
 
 
-@require_GET
 def place_events(request):
-    def event_stream():
-        last_snapshot = {}
-        while True:
-            current_snapshot = {
-                place.id: (place.likes, place.dislikes)
-                for place in Places.objects.all().only("id", "likes", "dislikes")
-            }
-            for place_id, (likes, dislikes) in current_snapshot.items():
-                previous = last_snapshot.get(place_id)
-                if previous != (likes, dislikes):
-                    payload = json.dumps({
-                        "place_id": place_id,
-                        "likes": likes,
-                        "dislikes": dislikes,
-                    })
-                    yield f"data: {payload}\n\n"
+    if request.method == "GET":
+        def event_stream():
+            last_snapshot = {}
+            while True:
+                current_snapshot = {
+                    place.id: (place.likes, place.dislikes)
+                    for place in Places.objects.all().only("id", "likes", "dislikes")
+                }
+                for place_id, (likes, dislikes) in current_snapshot.items():
+                    previous = last_snapshot.get(place_id)
+                    if previous != (likes, dislikes):
+                        payload = json.dumps({
+                            "place_id": place_id,
+                            "likes": likes,
+                            "dislikes": dislikes,
+                        })
+                        yield f"data: {payload}\n\n"
 
-            last_snapshot = current_snapshot
+                last_snapshot = current_snapshot
 
-            time.sleep(1)
+                time.sleep(1)
 
-    response = StreamingHttpResponse(event_stream(), content_type="text/event-stream")
-    response["Cache-Control"] = "no-cache"
-    response["X-Accel-Buffering"] = "no"
-    return response
+        response = StreamingHttpResponse(event_stream(), content_type="text/event-stream")
+        response["Cache-Control"] = "no-cache"
+        response["X-Accel-Buffering"] = "no"
+        return response
 
 
-@require_POST
 def add_like(request):
-    place_id = request.GET.get("data_key") or request.POST.get("data_key")
-    if not place_id:
-        return JsonResponse({"ok": False, "error": "place id is required"}, status=400)
+    if request.method == "POST":
+        place_id = request.GET.get("data_key") or request.POST.get("data_key")
+        if not place_id:
+            return JsonResponse({"ok": False, "error": "place id is required"}, status=400)
 
-    place = Places.objects.get(id=place_id)
-    place.likes += 1
-    place.save()
+        place = Places.objects.get(id=place_id)
+        place.likes += 1
+        place.save()
 
-    return JsonResponse({"ok": True})
+        return JsonResponse({"ok": True})
 
 
-@require_POST
 def add_dislike(request):
-    place_id = request.GET.get("data_key") or request.POST.get("data_key")
-    if not place_id:
-        return JsonResponse({"ok": False, "error": "place id is required"}, status=400)
+    if request.method == "POST":
+        place_id = request.GET.get("data_key") or request.POST.get("data_key")
+        if not place_id:
+            return JsonResponse({"ok": False, "error": "place id is required"}, status=400)
 
-    place = Places.objects.get(id=place_id)
-    place.dislikes += 1
-    place.save()
+        place = Places.objects.get(id=place_id)
+        place.dislikes += 1
+        place.save()
 
-    return JsonResponse({"ok": True})
+        return JsonResponse({"ok": True})
 
 
 def selected_places(request):
@@ -134,32 +126,34 @@ def login_view(request):
 
 @csrf_exempt
 def send_feedback_message(request):
-    if request.method == 'POST':
-        try:
-            name = request.POST.get('name')
-            email = request.POST.get('email')
-            message = request.POST.get('message')
-            full_message = f"Сообщение от {name}: \n\n{message}\n\n Почта пользователя: {email}"
+    if request.method != 'POST':
+        return render(request, 'travels/index.html')
 
-            payload = {
-                'chat_id': "268399534",
-                'text': full_message,
-            }
+    name = request.POST.get('name', '').strip()
+    email = request.POST.get('email', '').strip()
+    message = request.POST.get('message', '').strip()
 
-            response = requests.post(
-                f"https://api.telegram.org/bot{BOT.token}/sendMessage",
-                json=payload
-            )
+    payload = {
+        "name": name,
+        "email": email,
+        "message": message,
+    }
 
-            if response.status_code in (200, 201):
-                return render(request, 'travels/feedback_success.html')
+    try:
+        response = requests.post(
+            f"{settings.FEEDBACK_SERVICE_URL}/api/v1/feedback",
+            json=payload,
+            timeout=settings.FEEDBACK_SERVICE_TIMEOUT_SEC,
+        )
+    except requests.RequestException as exc:
+        logger.error(f"Feedback request failed: {exc}")
+        return redirect('feedback')
 
-        except requests.ConnectionError:
-            print("No connection")
-        except Exception as e:
-            logger.error(f"Error: {e}")
+    if response.status_code == 202:
+        return render(request, 'travels/feedback_success.html')
 
-    return render(request, 'travels/index.html')
+    logger.error(f"Feedback service returned error: {response.status_code} - {response.text}")
+    return redirect('feedback')
 
 
 @csrf_exempt

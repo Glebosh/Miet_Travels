@@ -135,3 +135,7 @@ STATICFILES_DIRS = [
 
 # Yandex Map API key
 YANDEX_MAPS_API_KEY = os.environ.get('YANDEX_MAP_API', '')
+
+# Feedback service integration
+FEEDBACK_SERVICE_URL = os.environ.get("FEEDBACK_SERVICE_URL", "http://feedback-service:8001")
+FEEDBACK_SERVICE_TIMEOUT_SEC = int(os.environ.get("FEEDBACK_SERVICE_TIMEOUT_SEC", "3"))
