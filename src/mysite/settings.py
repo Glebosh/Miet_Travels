@@ -75,7 +75,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "mysite.wsgi.application"
 
 # settings.py — switch to ASGI
-ASGI_APPLICATION = "myproject.asgi.application"
+ASGI_APPLICATION = "mysite.asgi.applicatio"
 
 
 # Database
