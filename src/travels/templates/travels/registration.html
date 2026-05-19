@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center px-4 py-12">
+    <div class="w-full max-w-md">
+
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-[oklch(42.1%_0.095_57.708)]">Регистрация</h1>
+            <p class="text-gray-500 mt-2">Создайте аккаунт, чтобы сохранять маршруты</p>
+        </div>
+
+        <div class="bg-white border border-amber-200 rounded-2xl shadow-sm px-8 py-8">
+            <form id="regForm" method="POST" action="{% url 'reg-process' %}" novalidate class="flex flex-col gap-5">
+                {% csrf_token %}
+
+                <div class="flex flex-col gap-1">
+                    <label for="first_name" class="text-sm font-semibold text-[oklch(42.1%_0.095_57.708)]">Имя *</label>
+                    <input type="text" id="first_name" name="first_name" required
+                           placeholder="Напр: Иван"
+                           data-error="Только буквы, первая — заглавная"
+                           class="w-full px-4 py-2.5 border border-amber-200 rounded-lg text-sm bg-orange-50
+                                  focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-300
+                                  placeholder:text-gray-400 transition">
+                    <span class="error-msg text-red-500 text-xs"></span>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="last_name" class="text-sm font-semibold text-[oklch(42.1%_0.095_57.708)]">Фамилия *</label>
+                    <input type="text" id="last_name" name="last_name" required
+                           placeholder="Напр: Иванов"
+                           class="w-full px-4 py-2.5 border border-amber-200 rounded-lg text-sm bg-orange-50
+                                  focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-300
+                                  placeholder:text-gray-400 transition">
+                    <span class="error-msg text-red-500 text-xs"></span>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="email" class="text-sm font-semibold text-[oklch(42.1%_0.095_57.708)]">Email *</label>
+                    <input type="email" id="email" name="email" required
+                           placeholder="example@mail.com"
+                           class="w-full px-4 py-2.5 border border-amber-200 rounded-lg text-sm bg-orange-50
+                                  focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-300
+                                  placeholder:text-gray-400 transition">
+                    <span class="error-msg text-red-500 text-xs"></span>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="age" class="text-sm font-semibold text-[oklch(42.1%_0.095_57.708)]">Возраст (от 18 до 100) *</label>
+                    <input type="number" id="age" name="age" min="18" max="100" required
+                           placeholder="Напр: 25"
+                           class="w-full px-4 py-2.5 border border-amber-200 rounded-lg text-sm bg-orange-50
+                                  focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-300
+                                  placeholder:text-gray-400 transition">
+                    <span class="error-msg text-red-500 text-xs"></span>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="password" class="text-sm font-semibold text-[oklch(42.1%_0.095_57.708)]">Пароль *</label>
+                    <input type="password" id="password" name="password" required
+                           placeholder="Введите ваш пароль"
+                           class="w-full px-4 py-2.5 border border-amber-200 rounded-lg text-sm bg-orange-50
+                                  focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-300
+                                  placeholder:text-gray-400 transition">
+                    <span class="error-msg text-red-500 text-xs"></span>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="confirm_password" class="text-sm font-semibold text-[oklch(42.1%_0.095_57.708)]">Повторите пароль *</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required
+                           placeholder="Повторите пароль"
+                           data-match="password"
+                           data-error="Пароли не совпадают"
+                           class="w-full px-4 py-2.5 border border-amber-200 rounded-lg text-sm bg-orange-50
+                                  focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-300
+                                  placeholder:text-gray-400 transition">
+                    <span class="error-msg text-red-500 text-xs"></span>
+                </div>
+
+                <button type="submit"
+                        class="w-full bg-amber-400 hover:bg-amber-500 text-white font-bold py-3 rounded-lg transition-colors mt-1">
+                    Зарегистрироваться
+                </button>
+
+            </form>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-white border border-amber-200 shadow-sm rounded-2xl mx-8 mt-10 px-8 py-4 text-red-500 text-lg uppercase text-center">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'travels/js/validation.js' %}?v=2"></script>
+{% endblock %}

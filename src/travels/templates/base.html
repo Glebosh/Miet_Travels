@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+{% load tailwind_tags %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Прогулочная программка{% endblock %}</title>
+    {% tailwind_css %}
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-orange-50 font-serif">
+    <header class="bg-amber-100 shadow-sm border-b border-gray-200 text-[oklch(42.1%_0.095_57.708)]">
+         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="/" class="text-xl font-bold text-shadow-lg ">Прогулочная программка</a>
+
+                <nav class="hidden md:flex items-center gap-6 list-none">
+                     <li><a href="/travels/" class="active">Выбор мест</a></li>
+                    <li><a href="/travels/selected/" class="">Мой маршрут</a></li>
+                    <li><a href="/travels/feedback/" class="">Обратная связь</a></li>
+                </nav>
+                
+                {% if request.session.user_id %}
+                    <a href="{% url 'logout-process' %}" class="">Выйти</a>
+                {% else %}
+                    <a href="/travels/login/" class="">Вход</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="min-h-full mt-8 py-4 bg-amber-100 text-center text-sm text-gray-600">
+         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             <p>&copy; 2026 Прогулочная программка.</p>
+         </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

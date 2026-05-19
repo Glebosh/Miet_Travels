@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Благодарность{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mt-10">
+        <h2 class="text-xl text-center font-bold text-[oklch(42.1%_0.095_57.708)] mb-4">
+            Благодарим за вашу обратную связь! А вот видео от нашего спонсора:
+        </h2>
+        <div class="bg-white border border-amber-200 rounded-2xl overflow-hidden shadow-sm">
+            <video width="100%" height="auto" controls poster="{% static 'travels/img.jpg' %}">
+                <source src="{% static 'travels/video.mp4' %}" type="video/mp4">
+                Ваш браузер не поддерживает встроенные видео.
+                <a href="{% static 'travels/video.mp4' %}" class="text-amber-700 underline">Скачайте видео</a>, чтобы посмотреть его.
+            </video>
+        </div>
+
+        <div class="mt-6 flex justify-center">
+            <a href="/travels/" class="px-6 py-3 bg-amber-100 hover:bg-amber-200 text-[oklch(42.1%_0.095_57.708)] text-xl font-semibold rounded-lg transition-colors border border-amber-200">
+                Вернуться на главную
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
