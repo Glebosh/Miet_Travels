@@ -129,11 +129,22 @@ jobs:
         with:                                                                                                                                                                                                                                
           host: ${{ secrets.SSH_HOST }} 
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}                                                                                                                                                                                                  
-          script: |                         
-            cd /home/deploy/miet_travels                                                                                                                                                                                                       
-            docker compose pull                                                                                                                                                                                                              
-            docker compose up -d --remove-orphans                                                                                                                                                                                              
-            docker image prune -f           
-            docker compose ps                                                                                                                                                                                                                  
-            curl -fsS http://localhost/ -o /dev/null && echo "Health OK" || (echo "Health FAILED"; exit 1)
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |                                                                                                                                                                                                                            
+              cd /home/deploy/miet_travels                                                                                                                                                                                                       
+              docker compose pull                                                                                                                                                                                                                
+              docker compose up -d --remove-orphans                                                                                                                                                                                              
+              docker image prune -f                                                                                                                                                                                                            
+              docker compose ps
+              echo "Waiting for web to become healthy..."                                                                                                                                                                                        
+              for i in $(seq 1 20); do        
+                if curl -fsS http://localhost/ -o /dev/null; then                                                                                                                                                                                
+                  echo "Health OK on attempt $i"                                                                                                                                                                                               
+                  exit 0                                                                                                                                                                                                                         
+                fi
+                echo "Attempt $i failed, retrying in 3s..."                                                                                                                                                                                      
+                sleep 3                                                                                                                                                                                                                        
+              done                                                                                                                                                                                                                               
+              echo "Health FAILED after 20 attempts (60s)"                                                                                                                                                                                     
+              docker compose logs --tail=50 web
+              exit 1                                                                                                                                                               
