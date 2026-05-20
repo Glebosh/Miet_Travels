@@ -22,6 +22,9 @@ jobs:
       DB_HOST: localhost
       DB_PORT: "5432"
       DJANGO_SETTINGS_MODULE: mysite.settings
+      DJANGO_SECRET_KEY: ci-only-not-a-real-secret
+      DJANGO_DEBUG: "False"
+      DJANGO_ALLOWED_HOSTS: localhost
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
