@@ -113,3 +113,27 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           push: ${{ github.event_name != 'pull_request' }}
+
+  deploy:
+    needs: [build-web, build-feedback]                                                                                                                                                                                                         
+    if: |                                                                                                                                                                                                                                    
+      github.event_name == 'workflow_dispatch' ||                                                                                                                                                                                              
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))                                                                                                                                                                 
+    runs-on: ubuntu-latest
+    concurrency:                                                                                                                                                                                                                               
+      group: deploy-vps                 
+      cancel-in-progress: false                                                                                                                                                                                                                
+    steps:                                                                                                                                                                                                                                     
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1                                                                                                                                                                                                           
+        with:                                                                                                                                                                                                                                
+          host: ${{ secrets.SSH_HOST }} 
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}                                                                                                                                                                                                  
+          script: |                         
+            cd /home/deploy/miet_travels                                                                                                                                                                                                       
+            docker compose pull                                                                                                                                                                                                              
+            docker compose up -d --remove-orphans                                                                                                                                                                                              
+            docker image prune -f           
+            docker compose ps                                                                                                                                                                                                                  
+            curl -fsS http://localhost/ -o /dev/null && echo "Health OK" || (echo "Health FAILED"; exit 1)
